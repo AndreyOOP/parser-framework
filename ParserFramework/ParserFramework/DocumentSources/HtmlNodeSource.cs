@@ -22,7 +22,8 @@ namespace ParserFramework
                     htmlDocument.LoadHtml(html);
                     htmlNode = htmlDocument.DocumentNode;
                 }
-                return htmlNode;
+                // ToCheck: maybe return clone - otherwise it may have inpact on original node
+                return htmlNode; 
             }
         }
     }

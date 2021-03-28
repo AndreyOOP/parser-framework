@@ -31,7 +31,7 @@ namespace ParserFramework
                     htmlNode = new HtmlNodeSource(html).HtmlDocument;
                     return htmlNode;
                 }
-                throw new HttpRequestException($"Request to {uri} return {response.StatusCode} status code");
+                throw new HttpRequestException($"'{uri}' request returns {response.StatusCode} status code");
             }
         }
     }
