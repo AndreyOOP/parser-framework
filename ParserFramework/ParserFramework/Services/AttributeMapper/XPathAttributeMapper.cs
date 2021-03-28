@@ -24,6 +24,7 @@ namespace ParserFramework
             this.propertyInfoService = propertyInfoService;
         }
 
+        // ToDo: add exception handling strategy - e.g. if can not parse some property set default instead of exception | pass such behaviour as object
         public T Map<T>(IHtmlNodeSource source) where T : class, new()
         {
             //var source = source.HtmlDocument;

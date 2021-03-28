@@ -18,20 +18,20 @@ namespace Features
     {
         class SimpleModel
         {
-            //[XPathSource("/div[@class='b']")]
-            //public double Double { get; set; }
+            [XPathSource("//div[@class='b']")]
+            public double Double { get; set; }
 
-            //[XPathSource("/div[@id='i3']")]
-            //public decimal Decimal { get; set; }
+            [XPathSource("//div[@id='i3']")]
+            public decimal Decimal { get; set; }
 
-            //[XPathSource("/div[@id='i1']")]
-            //public bool Bool { get; set; }
+            [XPathSource("//div[@id='i1']")]
+            public bool Bool { get; set; }
 
-            //[XPathSource("/span[@id='i2']")]
-            //public HtmlNode Node { get; set; }
+            [XPathSource("//span[@id='i2']")]
+            public HtmlNode Node { get; set; }
 
-            //[XPathSource("/a")]
-            //public string Text { get; set; }
+            [XPathSource("//a")]
+            public string Text { get; set; }
 
             [XPathSource("//a", returnHtml: true)]
             public string Html { get; set; }
@@ -41,7 +41,7 @@ namespace Features
         [DataRow(@"
         <html>
           <div class='a'>
-            <div class='b' id='i3'>1.25</div>
+            <div class='b' id='i3'>1,25</div>
           </div>
           <div class='b'>100</div>
           <div id='i1' class='c'>true</div>
@@ -52,11 +52,11 @@ namespace Features
             var mapper = new XPathAttributeMapper(new PropertyInfoService());
             var model = mapper.Map<SimpleModel>(new HtmlNodeSource(html));
 
-            //Assert.AreEqual(1.25, model.Double);
-            //Assert.AreEqual(1.25m, model.Decimal);
-            //Assert.AreEqual(true, model.Bool);
-            //Assert.AreEqual("<a href='http://test.com'>Test</a>", model.Node.InnerHtml);
-            //Assert.AreEqual("Test", model.Text);
+            Assert.AreEqual(1.25, model.Double);
+            Assert.AreEqual(1.25m, model.Decimal);
+            Assert.AreEqual(true, model.Bool);
+            Assert.AreEqual("<a href='http://test.com'>Test</a>", model.Node.InnerHtml);
+            Assert.AreEqual("Test", model.Text);
             Assert.AreEqual("<a href='http://test.com'>Test</a>", model.Html);
         }
     }
