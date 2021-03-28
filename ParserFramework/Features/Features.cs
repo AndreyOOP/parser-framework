@@ -1,8 +1,9 @@
 using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ParserFramework;
+using ParserFramework.DocumentSources;
+using ParserFramework.Services;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 
