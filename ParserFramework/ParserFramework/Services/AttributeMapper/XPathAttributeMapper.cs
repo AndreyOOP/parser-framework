@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
-using ParserFramework.DocumentSources;
+using ParserFramework.Models;
 using ParserFramework.Services;
-using System;
+using System.Linq;
 
 namespace ParserFramework
 {
@@ -11,54 +11,41 @@ namespace ParserFramework
     public interface IXPathAttributeMapper
     {
         public T Map<T>(IHtmlNodeSource source) where T : class, new();
-
-        public T Map<T>(HtmlNode node) where T : class;
     }
 
     public class XPathAttributeMapper : IXPathAttributeMapper
     {
         readonly IPropertyInfoService propertyInfoService;
+        readonly IValueExtractorFactory extractorFactory;
+        readonly IPropertyTypeDefinder typeDefinder;
 
-        public XPathAttributeMapper(IPropertyInfoService propertyInfoService)
+        public XPathAttributeMapper(IPropertyInfoService propertyInfoService, IValueExtractorFactory extractorFactory, IPropertyTypeDefinder typeDefinder)
         {
             this.propertyInfoService = propertyInfoService;
+            this.extractorFactory = extractorFactory;
+            this.typeDefinder = typeDefinder;
         }
 
+        // Note: move model mapping to separate task, now - put in order for Enumerable & single properties
         // ToDo: add exception handling strategy - e.g. if can not parse some property set default instead of exception | pass such behaviour as object
         public T Map<T>(IHtmlNodeSource source) where T : class, new()
         {
-            //var source = source.HtmlDocument;
-            var factory = new ValueExtractorFactory();
-
             var model = new T();
-            foreach (var property in model.GetType().GetProperties())
+
+            var propertyToAttributeMap = model.GetType().GetProperties()
+                .ToDictionary(k => k, v => propertyInfoService.GetAttribute<XPathSourceAttribute>(v))
+                .Where(p => p.Value != null);
+
+            foreach (var(property, attribute) in propertyToAttributeMap)
             {
-                // get xpath & returnHtml
-                var attribute = propertyInfoService.GetAttribute<XPathSourceAttribute>(property); // property.GetCustomAttributes().OfType<XPathSourceAttribute>().First();
-                //var xPath = attribute.XPath;
-                //var returnHtml = attribute.ReturnHtml;
+                var nodes = source.HtmlDocument.SelectNodes(attribute.XPath);
+                var propertyType = typeDefinder.DefineType(property);
+                var extractor =  extractorFactory.Create(propertyType, nodes);
 
-                // select node
-                var node = source.HtmlDocument.SelectSingleNode(attribute.XPath);
-
-                // factory: create value getter
-                var extractor = factory.Create(property, attribute.ReturnHtml, node);
-
-                // get value
-                var value = extractor.Value;
-
-                // property - set value property.SetValue(tOut, convertedValue);
-                property.SetValue(model, value);
-                //factory
+                property.SetValue(model, extractor.Value);
             }
-            // define type - collection, primitive, another object
 
             return model;
-        }
-
-        public T Map<T>(HtmlNode node) where T : class
-        {
-            throw new NotImplementedException();
         }
     }
 
