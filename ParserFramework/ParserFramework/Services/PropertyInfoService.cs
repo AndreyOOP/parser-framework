@@ -33,6 +33,6 @@ namespace ParserFramework.Services
             => propertyInfo.CustomAttributes.FirstOrDefault(attribute => attribute.AttributeType == typeof(T));
 
         public T GetAttribute<T>(PropertyInfo propertyInfo) where T : Attribute
-            => propertyInfo.GetCustomAttributes().OfType<T>().First();
+            => propertyInfo.GetCustomAttributes().OfType<T>().FirstOrDefault();
     }
 }
