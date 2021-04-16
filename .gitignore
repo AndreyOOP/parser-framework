@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ParserFramework/.vs/ParserFramework
+/ParserFramework/Features/bin/Debug/netcoreapp3.1
+/ParserFramework/Features/obj
+/ParserFramework/ParserFramework/bin/Debug/netcoreapp3.1
+/ParserFramework/ParserFramework/obj
